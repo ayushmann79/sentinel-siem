@@ -374,7 +374,9 @@ ADMIN_PASSWORD=SentinelAdmin@2024
 
 ## Author
 
-**Ayushman Raj** — Smart contract security researcher and software engineer.
+**Ayushman Raj** — Cybersecurity enthusiast and software engineer focused on security monitoring, threat detection, and security automation.
+
+
 
 - GitHub: [@ayushmann79](https://github.com/ayushmann79)
 - Twitter/X: [@ayushblock](https://twitter.com/ayushblock)
