@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  sentinelsiem:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: sentinelsiem:2.0.0
+    container_name: sentinelsiem
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - sentinel_data:/data
+      - ./config:/app/config:ro      # live-reload rules without rebuild
+    env_file:
+      - .env
+    environment:
+      - DUCKDB_PATH=/data/sentinel.duckdb
+      - APP_ENV=production
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - sentinel_net
+
+volumes:
+  sentinel_data:
+    driver: local
+
+networks:
+  sentinel_net:
+    driver: bridge

@@ -1,0 +1,94 @@
+# SentinelSIEM correlation rules
+# Each rule is evaluated against every ingested event.
+# Rule types: threshold | sequence | ioc_match
+
+rules:
+
+  - id: RULE-001
+    name: SSH brute force
+    description: More than 5 failed SSH login attempts from one IP within 60 seconds
+    severity: high
+    mitre_attack: T1110.001
+    condition:
+      type: threshold
+      index: auth
+      filter: "action=failed AND dst_port=22"
+      group_by: src_ip
+      threshold: 5
+      window_seconds: 60
+
+  - id: RULE-002
+    name: Repeated login failures (any service)
+    description: 10 or more failed authentications from one IP in 5 minutes
+    severity: medium
+    mitre_attack: T1110
+    condition:
+      type: threshold
+      index: auth
+      filter: "action=failed"
+      group_by: src_ip
+      threshold: 10
+      window_seconds: 300
+
+  - id: RULE-003
+    name: Firewall blocked port scan
+    description: Single source IP blocked on 20+ distinct destination ports in 1 minute
+    severity: medium
+    mitre_attack: T1046
+    condition:
+      type: threshold
+      index: firewall
+      filter: "action=blocked"
+      group_by: src_ip
+      threshold: 20
+      window_seconds: 60
+
+  - id: RULE-004
+    name: Excessive outbound data transfer
+    description: More than 500 MB outbound from a single host in 1 hour
+    severity: high
+    mitre_attack: T1048
+    condition:
+      type: threshold
+      index: network
+      filter: "direction=outbound"
+      group_by: host
+      threshold: 500
+      window_seconds: 3600
+
+  - id: RULE-005
+    name: Known C2 / malicious IP contact
+    description: Internal host communicated with a known threat intelligence indicator
+    severity: critical
+    mitre_attack: T1071
+    condition:
+      type: ioc_match
+      fields:
+        - dst_ip
+        - src_ip
+
+  - id: RULE-006
+    name: Admin account created outside business hours
+    description: New privileged account created on a weekend or after 22:00
+    severity: medium
+    mitre_attack: T1136.001
+    condition:
+      type: threshold
+      index: auth
+      filter: "action=user_created AND username=admin"
+      group_by: host
+      threshold: 1
+      window_seconds: 60
+
+  - id: RULE-007
+    name: Repeated sudo failures
+    description: Same user fails sudo 3 times in 2 minutes
+    severity: medium
+    mitre_attack: T1548.003
+    condition:
+      type: threshold
+      index: auth
+      filter: "process=sudo AND action=failed"
+      group_by: username
+      threshold: 3
+      window_seconds: 120

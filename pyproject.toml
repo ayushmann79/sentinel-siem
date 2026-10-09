@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "sentinelsiem"
+version = "2.0.0"
+description = "Enterprise-grade Security Information & Event Management platform"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "Ayushman Raj", email = "ayushmann79@github.com" }]
+requires-python = ">=3.11"
+keywords = ["siem", "security", "log-management", "threat-detection", "fastapi"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Information Technology",
+    "Topic :: Security",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+[project.urls]
+Homepage = "https://github.com/ayushmann79/sentinelsiem"
+Issues   = "https://github.com/ayushmann79/sentinelsiem/issues"
+
+[tool.pytest.ini_options]
+testpaths    = ["tests"]
+asyncio_mode = "auto"
+addopts      = "-v --tb=short"
+
+[tool.coverage.run]
+source = ["sentinelsiem"]
+omit   = ["tests/*", "scripts/*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
